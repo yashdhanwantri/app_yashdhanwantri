@@ -6,11 +6,6 @@ pipeline {
     }
 
     stages {
-        stage('Checkout Code') {
-            steps{
-                checkout([$class: 'GitSCM', branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[credentialsId: 'Github', url: 'https://github.com/yashdhanwantri/app_yashdhanwantri.git']]])
-            }
-        }
         stage('Nuget restore') {
             steps {
                 bat 'dotnet restore'
