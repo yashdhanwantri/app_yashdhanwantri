@@ -3,8 +3,6 @@ pipeline {
     
     environment{
         scannerHome = tool name: 'sonar_scanner_dotnet'
-        username = 'admin'
-        appName = 'sonar-yashdhanwantri'
     }
 
     stages {
@@ -22,7 +20,7 @@ pipeline {
         stage('Start sonarqube analysis') {
             steps {
                 echo 'Starting Sonarqube Analysis'
-                withSonarQubeEnv('Sonar'){
+                withSonarQubeEnv('SonarQubeScanner'){
                     bat "dotnet ${scannerHome}\\SonarScanner.MSBuild.dll begin /k:\"sonar-yashdhanwantri\" /d:sonar.verbose=true -d:sonar.cs.xunit.reportsPath='Tests/TestResults/app-yashdhanwantriTestFileReport.xml'"
                 }
             }
@@ -36,7 +34,7 @@ pipeline {
         stage('Stop sonarqube analysis') {
             steps {
                 echo "Stopping sonarqube analysis"
-                withSonarQubeEnv('Sonar'){
+                withSonarQubeEnv('SonarQubeScanner'){
                     bat "dotnet ${scannerHome}\\SonarScanner.MSBuild.dll end"
                 }
             }

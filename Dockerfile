@@ -7,7 +7,6 @@ COPY ./nagp-devops-us/*.csproj ./
 RUN dotnet restore
 # Copy everything else and build
 COPY . ./
-RUN ls
 
 RUN dotnet publish -c Release -o out
 
