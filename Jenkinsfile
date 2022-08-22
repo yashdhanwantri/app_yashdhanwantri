@@ -20,8 +20,8 @@ pipeline {
         stage('Start sonarqube analysis') {
             steps {
                 echo 'Starting Sonarqube Analysis'
-                withSonarQubeEnv('SonarQubeScanner'){
-                    bat "dotnet ${scannerHome}\\SonarScanner.MSBuild.dll begin /k:\"sonar-yashdhanwantri\" /d:sonar.verbose=true -d:sonar.cs.xunit.reportsPath='Tests/TestResults/app-yashdhanwantriTestFileReport.xml'"
+                withSonarQubeEnv('Test_Sonar'){
+                    bat "dotnet ${scannerHome}\\SonarScanner.MSBuild.dll begin /k:\"sonar-yashdhanwantri\" /d:sonar.verbose=true"
                 }
             }
         }
@@ -31,10 +31,17 @@ pipeline {
                 bat 'dotnet build'
             }
         }
+        
+        stage('Test case execution'){
+            steps{
+                bat 'dotnet test test-project\\test-project.csproj'
+            }
+        }
+        
         stage('Stop sonarqube analysis') {
             steps {
                 echo "Stopping sonarqube analysis"
-                withSonarQubeEnv('SonarQubeScanner'){
+                withSonarQubeEnv('Test_Sonar'){
                     bat "dotnet ${scannerHome}\\SonarScanner.MSBuild.dll end"
                 }
             }
