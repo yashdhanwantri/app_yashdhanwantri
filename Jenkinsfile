@@ -16,18 +16,18 @@ pipeline {
                 bat 'dotnet restore'
             }
         }
-        
-        stage('Start sonarqube analysis') {
-			when {
-				branch 'master'
+		
+        if(env.BRANCH_NAME = "master"){
+			stage('Start sonarqube analysis') {
+				steps {
+					echo 'Starting Sonarqube Analysis'
+					withSonarQubeEnv('Test_Sonar'){
+						bat "dotnet ${scannerHome}\\SonarScanner.MSBuild.dll begin /k:\"sonar-yashdhanwantri\" /d:sonar.verbose=true"
+					}
+				}
 			}
-            steps {
-                echo 'Starting Sonarqube Analysis'
-                withSonarQubeEnv('Test_Sonar'){
-                    bat "dotnet ${scannerHome}\\SonarScanner.MSBuild.dll begin /k:\"sonar-yashdhanwantri\" /d:sonar.verbose=true"
-                }
-            }
-        }
+		}
+        
         stage('Code build') {
             steps {
                 bat 'dotnet clean'
@@ -35,33 +35,31 @@ pipeline {
             }
         }
         
-        stage('Test case execution'){
-			when {
-				branch 'master'
+		if(env.BRANCH_NAME = "master"){
+			stage('Test case execution'){
+				steps{
+					bat 'dotnet test test-project\\test-project.csproj'
+				}
 			}
-            steps{
-                bat 'dotnet test test-project\\test-project.csproj'
-            }
-        }
+		}
         
-        stage('Stop sonarqube analysis') {
-			when {
-				branch 'master'
+        if(env.BRANCH_NAME = "master"){
+			stage('Stop sonarqube analysis') {
+				steps {
+					echo "Stopping sonarqube analysis"
+					withSonarQubeEnv('Test_Sonar'){
+						bat "dotnet ${scannerHome}\\SonarScanner.MSBuild.dll end"
+					}
+				}
 			}
-            steps {
-                echo "Stopping sonarqube analysis"
-                withSonarQubeEnv('Test_Sonar'){
-                    bat "dotnet ${scannerHome}\\SonarScanner.MSBuild.dll end"
-                }
-            }
         }
-        stage('Release artifact') {
-			when {
-				branch 'develop'
+		
+		if(env.BRANCH_NAME = "develop"){
+			stage('Release artifact') {
+				steps{
+					bat 'dotnet publish'
+				}
 			}
-            steps{
-                bat 'dotnet publish'
-            }
-        }
+		}
     }
 }
