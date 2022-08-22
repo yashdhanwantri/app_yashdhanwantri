@@ -17,7 +17,7 @@ pipeline {
             }
         }
 		
-        if(env.BRANCH_NAME = "master"){
+        if(env.BRANCH_NAME == "master"){
 			stage('Start sonarqube analysis') {
 				steps {
 					echo 'Starting Sonarqube Analysis'
@@ -35,7 +35,7 @@ pipeline {
             }
         }
         
-		if(env.BRANCH_NAME = "master"){
+		if(env.BRANCH_NAME == "master"){
 			stage('Test case execution'){
 				steps{
 					bat 'dotnet test test-project\\test-project.csproj'
@@ -43,7 +43,7 @@ pipeline {
 			}
 		}
         
-        if(env.BRANCH_NAME = "master"){
+        if(env.BRANCH_NAME == "master"){
 			stage('Stop sonarqube analysis') {
 				steps {
 					echo "Stopping sonarqube analysis"
@@ -54,7 +54,7 @@ pipeline {
 			}
         }
 		
-		if(env.BRANCH_NAME = "develop"){
+		if(env.BRANCH_NAME == "develop"){
 			stage('Release artifact') {
 				steps{
 					bat 'dotnet publish'
