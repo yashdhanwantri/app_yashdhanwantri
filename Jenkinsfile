@@ -18,6 +18,9 @@ pipeline {
         }
         
         stage('Start sonarqube analysis') {
+			when {
+				branch 'master'
+			}
             steps {
                 echo 'Starting Sonarqube Analysis'
                 withSonarQubeEnv('Test_Sonar'){
@@ -33,12 +36,18 @@ pipeline {
         }
         
         stage('Test case execution'){
+			when {
+				branch 'master'
+			}
             steps{
                 bat 'dotnet test test-project\\test-project.csproj'
             }
         }
         
         stage('Stop sonarqube analysis') {
+			when {
+				branch 'master'
+			}
             steps {
                 echo "Stopping sonarqube analysis"
                 withSonarQubeEnv('Test_Sonar'){
@@ -47,6 +56,9 @@ pipeline {
             }
         }
         stage('Release artifact') {
+			when {
+				branch 'develop'
+			}
             steps{
                 bat 'dotnet publish'
             }
