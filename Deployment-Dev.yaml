@@ -1,0 +1,78 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: config-app-yashdhanwantri-dev
+  namespace: kubernetes-cluster-yashdhanwantri
+data:
+  customName: TestCustomConfigMapName
+  customPlace: TestCustomConfigMapPlace
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: secret-app-yashdhanwantri-dev
+  namespace: kubernetes-cluster-yashdhanwantri
+data:
+  secretUserName: SGFrdW5h
+  secretPassword: TWF0YXRh
+type: opaque
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: i-yashdhanwantri-deployment-dev
+  namespace: kubernetes-cluster-yashdhanwantri
+  labels:
+    app: i-yashdhanwantri-develop
+spec:
+  template:
+    metadata:
+      name: i-yashdhanwantri-develop
+      namespace: kubernetes-cluster-yashdhanwantri
+      labels:
+        app: i-yashdhanwantri-develop
+        type: backend
+    spec:
+      containers:
+        - name: i-yashdhanwantri-develop
+          image: yashdhanwantri/i-yashdhanwantri-develop
+          env:
+            - name: CONFIG_CUSTOM_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: config-app-yashdhanwantri-dev
+                  key: customName
+            - name: CONFIG_CUSTOM_PLACE
+              valueFrom:
+                configMapKeyRef:
+                  name: config-app-yashdhanwantri-dev
+                  key: customPlace
+            - name: SECRET_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: secret-app-yashdhanwantri-dev
+                  key: secretUserName
+            - name: SECRET_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: secret-app-yashdhanwantri-dev
+                  key: secretPassword
+  replicas: 4
+  selector:
+    matchLabels:
+      app: i-yashdhanwantri-develop
+      type: backend
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: i-yashdhanwantri-develop-loadbalancer-service
+  namespace: kubernetes-cluster-yashdhanwantri
+spec:
+  type: LoadBalancer
+  ports:
+  - targetPort: 80
+    port: 80
+    nodePort: 30081
+  selector:
+    app: i-yashdhanwantri-develop
