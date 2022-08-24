@@ -1,0 +1,78 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: config-app-yashdhanwantri-master
+  namespace: kubernetes-cluster-yashdhanwantri
+data:
+  customName: TestCustomConfigMapName
+  customPlace: TestCustomConfigMapPlace
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: secret-app-yashdhanwantri-master
+  namespace: kubernetes-cluster-yashdhanwantri
+data:
+  secretUserName: SGFrdW5h
+  secretPassword: TWF0YXRh
+type: opaque
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: i-yashdhanwantri-deployment-master
+  namespace: kubernetes-cluster-yashdhanwantri
+  labels:
+    app: i-yashdhanwantri-master
+spec:
+  template:
+    metadata:
+      name: i-yashdhanwantri-master
+      namespace: kubernetes-cluster-yashdhanwantri
+      labels:
+        app: i-yashdhanwantri-master
+        type: backend
+    spec:
+      containers:
+        - name: i-yashdhanwantri-master
+          image: yashdhanwantri/i-yashdhanwantri-master
+          env:
+            - name: CONFIG_CUSTOM_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: config-app-yashdhanwantri-master
+                  key: customName
+            - name: CONFIG_CUSTOM_PLACE
+              valueFrom:
+                configMapKeyRef:
+                  name: config-app-yashdhanwantri-master
+                  key: customPlace
+            - name: SECRET_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: secret-app-yashdhanwantri-master
+                  key: secretUserName
+            - name: SECRET_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: secret-app-yashdhanwantri-master
+                  key: secretPassword
+  replicas: 4
+  selector:
+    matchLabels:
+      app: i-yashdhanwantri-master
+      type: backend
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: i-yashdhanwantri-master-loadbalancer-service
+  namespace: kubernetes-cluster-yashdhanwantri
+spec:
+  type: LoadBalancer
+  ports:
+  - targetPort: 80
+    port: 80
+    nodePort: 30082
+  selector:
+    app: i-yashdhanwantri-master
