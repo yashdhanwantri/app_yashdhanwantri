@@ -20,18 +20,18 @@ type: opaque
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: i-yashdhanwantri-deployment-master
+  name: app-yashdhanwantri-deployment-master
   namespace: kubernetes-cluster-yashdhanwantri
   labels:
-    app: i-yashdhanwantri-master
+    app: app-yashdhanwantri-master
 spec:
   template:
     metadata:
-      name: i-yashdhanwantri-master
+      name: app-yashdhanwantri-master
       namespace: kubernetes-cluster-yashdhanwantri
       labels:
-        app: i-yashdhanwantri-master
-        type: backend
+        app: app-yashdhanwantri-master
+        type: nagpAssignmentApp
     spec:
       containers:
         - name: i-yashdhanwantri-master
@@ -60,13 +60,13 @@ spec:
   replicas: 4
   selector:
     matchLabels:
-      app: i-yashdhanwantri-master
-      type: backend
+      app: app-yashdhanwantri-master
+      type: nagpAssignmentApp
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: i-yashdhanwantri-master-loadbalancer-service
+  name: app-yashdhanwantri-master-loadbalancer-service
   namespace: kubernetes-cluster-yashdhanwantri
 spec:
   type: LoadBalancer
@@ -75,4 +75,4 @@ spec:
     port: 80
     nodePort: 30082
   selector:
-    app: i-yashdhanwantri-master
+    app: app-yashdhanwantri-master
