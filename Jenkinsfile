@@ -62,9 +62,9 @@ pipeline {
             steps{
 				script {
                     if (env.BRANCH_NAME == 'master') {
-                        bat 'kubectl apply -f ./Deployment-Master.yaml
+                        bat 'kubectl apply -f ./Deployment-Master.yaml'
                     } else if (env.BRANCH_NAME == 'develop'){
-                        bat 'kubectl apply -f ./Deployment-Dev.yaml
+                        bat 'kubectl apply -f ./Deployment-Dev.yaml'
                     }
                 }
             }
